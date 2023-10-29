@@ -1,0 +1,5 @@
+buildCommand: |
+  venv\Scripts\activate
+  pip install -r requirements.txt
+  python AssesmentWebsite/manage.py migrate
+startCommand: python AssesmentWebsite/manage.py runserver 0.0.0.0:8000
