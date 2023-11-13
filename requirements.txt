@@ -7,4 +7,4 @@ typing-extensions>=3.7,<4.0
 tzdata==2023.3
 pandas>=1.0,<2.0
 Pillow>=7.0,<9.0
-corsheaders>=4.0
+corsheaders>=3.0,<4.0
