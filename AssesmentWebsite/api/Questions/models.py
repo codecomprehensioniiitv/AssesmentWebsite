@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.forms import CharField
 
 level_choices = (("1", "Beginner"), ("2", "Intermediate"), ("3", "Expert"))
-language_choices = (("1", "Python"), ("2", "C++"), ("3", "JavaScript"))
+language_choices = (("1", "Python"), ("2", "C++"), ("3", "Javascript"))
 
 
 class QuestionBank(models.Model):
