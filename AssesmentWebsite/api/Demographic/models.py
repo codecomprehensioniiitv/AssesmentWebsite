@@ -32,7 +32,7 @@ class Expertise(models.Model):
     fuid = models.ForeignKey(
         Demographic, related_name="demographic_id", on_delete=models.CASCADE, null=True
     )
-    programming_language = models.CharField(choices=language_choices, max_length=100)
+    selectedLanguage = models.CharField(choices=language_choices, max_length=100)
     level = models.CharField(choices=level_choices, max_length=100)
     duration = models.CharField(choices=duration_choices, max_length=100)
     time = models.IntegerField()
