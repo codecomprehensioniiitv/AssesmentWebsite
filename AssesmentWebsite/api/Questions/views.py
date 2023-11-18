@@ -9,7 +9,6 @@ from .serializers import *
 from ..Demographic.serializers import Expertise
 
 
-user_id = None
 question_bank_id = None
 question_bank_level_id = None
 code_id = None

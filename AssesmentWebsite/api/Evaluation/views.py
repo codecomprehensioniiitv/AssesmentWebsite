@@ -12,7 +12,7 @@ from ..Demographic.models import *
 from ..Demographic.serializers import *
 from ..Questions.models import *
 
-user_id = None
+
 question_bank_id = None
 question_bank_level_id = None
 code_id = None
