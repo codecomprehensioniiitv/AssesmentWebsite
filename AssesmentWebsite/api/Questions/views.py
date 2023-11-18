@@ -174,7 +174,9 @@ def getcode(request):
         level = QuestionsBankLevel.objects.get(
             fqbid=question_bank_id, qlevel=queries["level"]
         )
-        user_code_id = Code.objects.filter(fqblid=level.qblid)[int(queries["code"])].cid
+        user_code_id = (
+            Code.objects.filter(fqblid=level.qblid)[int(queries["code"])].first().cid
+        )
 
         code_instance = Code.objects.get(cid=user_code_id)
         serializer = CodeSerializer(code_instance)
