@@ -1,121 +1,137 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# C extensions
-*.so
-
-# Distribution / packaging
-dist/
-build/
-eggs/
-*.egg-info/
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-
-# Translations
-*.mo
-
-# Django stuff:
+# Django #
 *.log
-local_settings.py
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
 
-# Flask stuff:
-instance/
-.webassets-cache
+# Backup files # 
+*.bak 
 
-# Scrapy stuff:
-.scrapy
+# If you are using PyCharm # 
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
 
-# Sphinx documentation
-docs/_build/
+# AWS User-specific
+.idea/**/aws.xml
 
-# PyInstaller
-dist/
-build/
+# Generated files
+.idea/**/contentModel.xml
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
 
-# IPython
-profile_default/
-ipython_config.py
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
 
-# Environments
-.env
-.venv/
-env/
-.venv
-ENV/
+# File-based project format
+*.iws
 
-# Spyder project settings
-.spyderproject
-.spyproject
+# IntelliJ
+out/
 
-# Rope project settings
-.ropeproject
+# JIRA plugin
+atlassian-ide-plugin.xml
 
-# mkdocs documentation
-/site
+# Python # 
+*.py[cod] 
+*$py.class 
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+# Distribution / packaging 
+.Python build/ 
+develop-eggs/ 
+dist/ 
+downloads/ 
+eggs/ 
+.eggs/ 
+lib/ 
+lib64/ 
+parts/ 
+sdist/ 
+var/ 
+wheels/ 
+*.egg-info/ 
+.installed.cfg 
+*.egg 
+*.manifest 
+*.spec 
 
-# Pyre type checker
-.pyre/
+# Installer logs 
+pip-log.txt 
+pip-delete-this-directory.txt 
 
-# Pytest
-.pytest_cache/
+# Unit test / coverage reports 
+htmlcov/ 
+.tox/ 
+.coverage 
+.coverage.* 
+.cache 
+.pytest_cache/ 
+nosetests.xml 
+coverage.xml 
+*.cover 
+.hypothesis/ 
 
-# Pylint
-.pylint.d/
+# Jupyter Notebook 
+.ipynb_checkpoints 
 
-# celery beat schedule file
-celerybeat-schedule
+# pyenv 
+.python-version 
 
-# SageMath parsed files
-*.sage.py
+# celery 
+celerybeat-schedule.* 
 
-# Enthought Canopy
-# https://support.enthought.com/hc/en-us/articles/204469240-How-do-I-configure-Canopy-to-ignore-certain-files-
-.enthought/
+# SageMath parsed files 
+*.sage.py 
 
-# Microsoft Visual Studio Code
-.vscode/
+# Environments 
+.env 
+.venv 
+env/ 
+venv/ 
+ENV/ 
+env.bak/ 
+venv.bak/ 
 
-# Mac OS
-.DS_Store
+# mkdocs documentation 
+/site 
 
-# Windows
-Thumbs.db
-Desktop.ini
+# mypy 
+.mypy_cache/ 
 
-# Python notebooks
-.ipynb_checkpoints/
+# Sublime Text # 
+*.tmlanguage.cache 
+*.tmPreferences.cache 
+*.stTheme.cache 
+*.sublime-workspace 
+*.sublime-project 
 
-# SageMath parsed files
-*.sage.py
+# sftp configuration file 
+sftp-config.json 
 
-# Spyder project settings
-.spyderproject
-.spyproject
+# Package control specific files Package 
+Control.last-run 
+Control.ca-list 
+Control.ca-bundle 
+Control.system-ca-bundle 
+GitHub.sublime-settings 
 
-# Rope project settings
-.ropeproject
+# Visual Studio Code # 
+.vscode/* 
+!.vscode/settings.json 
+!.vscode/tasks.json 
+!.vscode/launch.json 
+!.vscode/extensions.json 
+.history
