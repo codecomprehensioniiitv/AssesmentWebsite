@@ -2,8 +2,14 @@
 *.log
 *.pot
 *.pyc
+# Byte-compiled / optimized / DLL files
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-.venv/
+venv/
 
 __pycache__
 db.sqlite3
