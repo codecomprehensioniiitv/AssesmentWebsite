@@ -122,7 +122,7 @@ def login1(request):
     )
 
 
-# Questions
+# EVALUATION
 from .Evaluation.models import *
 from .Evaluation.serializers import *
 from rest_framework.decorators import api_view
