@@ -23,6 +23,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 
+# request.session['user_id'] = None
+user_id = None
+question_bank_id = None
+question_bank_level_id = None
+code_id = None
+evaluation_id = None
+# questionbankevaluation_id = None
+user_code_id = None
+
 
 @api_view(["GET", "POST", "DELETE"])
 def demographic(request, pk=None):
@@ -136,14 +145,6 @@ import pandas as pd
 from .Demographic.models import *
 from .Demographic.serializers import *
 from .Questions.models import *
-
-user_id = None
-question_bank_id = None
-question_bank_level_id = None
-code_id = None
-evaluation_id = None
-# questionbankevaluation_id = None
-user_code_id = None
 
 
 @api_view(["GET", "POST", "DELETE"])
@@ -754,8 +755,10 @@ def getquestion(request):
         # question_code_id = 1
         print("quesry params", request.query_params)
         # user_id = 1
-        queries = request.query_params
-        id = Question.objects.filter(fcid=user_code_id)[int(queries["question"][0])].qid
+
+        question_number = int(request.query_params["question"][0])
+        id = Question.objects.filter(fcid=user_code_id)[question_number - 1].qid
+
         stu = Question.objects.get(qid=id)
         serializer = QuestionSerializer(stu)
-        return Response(serializer.data)
+        return Response(serializers.data)
