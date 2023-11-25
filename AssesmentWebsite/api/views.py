@@ -728,36 +728,23 @@ def question(request, pk=None):
 @api_view(["GET"])
 def getcode(request):
     global user_code_id
-    try:
-        # Uncomment and define user_id appropriately
-        # user_id = 1
-
-        # Check if Expertise object with the given user_id exists
-
-        expertise_instance = Expertise.objects.get(fuid=user_id)
-        programming_language = expertise_instance.selectedLanguage
-
+    if request.method == "GET":
+        # user_id = 1\
+        programming_language = Expertise.objects.get(fuid=user_id).selectedLanguage
         question_bank_id = QuestionBank.objects.get(
             admin_programming_language=programming_language
         ).qbid
-
         queries = request.query_params
         level = QuestionsBankLevel.objects.get(
-            fqbid=question_bank_id, qlevel=queries["level"]
-        )
-        user_code_id = (
-            Code.objects.filter(fqblid=level.qblid)[int(queries["code"])].first().cid
-        )
+            fqbid=question_bank_id, qlevel=queries["level"][0]
+        ).qblid
+        # request.session['question_code_id'] = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
+        user_code_id = Code.objects.filter(fqblid=level)[int(queries["code"][0])].cid
 
-        code_instance = Code.objects.get(cid=user_code_id)
-        serializer = CodeSerializer(code_instance)
+        # stu = Code.objects.get(cid=request.session['question_code_id'])
+        stu = Code.objects.get(cid=user_code_id)
+        serializer = CodeSerializer(stu)
         return Response(serializer.data)
-    except ObjectDoesNotExist as e:
-        return Response(
-            {"error": f"Expertise with user_id {user_id} does not exist."}, status=404
-        )
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
 
 
 @api_view(["GET"])
