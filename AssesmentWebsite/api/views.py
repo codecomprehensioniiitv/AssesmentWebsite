@@ -730,7 +730,6 @@ def question(request, pk=None):
 def getcode(request):
     global user_code_id
     if request.method == "GET":
-        # user_id = 1\
         programming_language = Expertise.objects.get(fuid=user_id).selectedLanguage
         question_bank_id = QuestionBank.objects.get(
             admin_programming_language=programming_language
@@ -757,7 +756,7 @@ def getquestion(request):
         # user_id = 1
 
         question_number = int(request.query_params["question"][0])
-        id = Question.objects.filter(fcid=user_code_id)[question_number - 1].qid
+        id = Question.objects.filter(fcid=user_code_id)[question_number].qid
 
         stu = Question.objects.get(qid=id)
         serializer = QuestionSerializer(stu)
