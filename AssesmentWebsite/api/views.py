@@ -754,10 +754,8 @@ def getquestion(request):
         # question_code_id = 1
         print("quesry params", request.query_params)
         # user_id = 1
-
-        question_number = int(request.query_params["question"][0])
-        id = Question.objects.filter(fcid=user_code_id)[question_number].qid
-
+        queries = request.query_params
+        id = Question.objects.filter(fcid=user_code_id)[int(queries["question"][0])].qid
         stu = Question.objects.get(qid=id)
         serializer = QuestionSerializer(stu)
-        return Response(serializers.data)
+        return Response(serializer.data)
