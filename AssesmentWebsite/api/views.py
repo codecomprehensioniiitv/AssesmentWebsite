@@ -751,11 +751,13 @@ def getcode(request):
 def getquestion(request):
     if request.method == "GET":
         # request.session['question_code_id'] = 1
-        # question_code_id = 1
-        print("quesry params", request.query_params)
-        # user_id = 1
+        # question_code_id = 10
+        # print("quesry params", request.query_params)
+        # # user_id = 1
         queries = request.query_params
-        id = Question.objects.filter(fcid=user_code_id)[int(queries["question"][0])].qid
-        stu = Question.objects.get(qid=id)
+        question_code_id = Question.objects.filter(fcid=user_code_id)[
+            int(queries["question"][0])
+        ].qid
+        stu = Question.objects.get(qid=question_code_id)
         serializer = QuestionSerializer(stu)
         return Response(serializer.data)
