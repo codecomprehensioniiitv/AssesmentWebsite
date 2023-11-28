@@ -23,14 +23,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 
-# request.session['user_id'] = None
 user_id = None
 question_bank_id = None
 question_bank_level_id = None
 code_id = None
 evaluation_id = None
-# questionbankevaluation_id = None
-user_code_id = None
 
 
 @api_view(["GET", "POST", "DELETE"])
@@ -55,7 +52,10 @@ def demographic(request, pk=None):
             # request.session['user_id'] = Demographic.objects.order_by('-uid')[0].uid
             user_id = Demographic.objects.order_by("-uid")[0].uid
 
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "user_id": user_id},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
@@ -79,9 +79,9 @@ def expertise(request, pk=None):
         return Response(serializer.data)
 
     if request.method == "POST":
-        print("EH")
         dic = request.data
         # dic['fuid'] = request.session['user_id']
+        user_id = int(request.query_params["ffuid"])
         dic["fuid"] = user_id
 
         serializer = ExpertiseSerializer(data=dic)
@@ -163,22 +163,25 @@ def evaluation(request, pk=None):
 
     if request.method == "POST":
         dic = request.data
-        # dic['ffuid'] = request.session['user_id']
-        dic["ffuid"] = user_id
+        user_id = int(request.query_params["ffuid"])
 
-        # questionbanklang = Expertise.objects.get(fuid=request.session['user_id']).programming_language
-        questionbanklang = Expertise.objects.get(fuid=user_id).programming_language
+        dic["ffuid"] = user_id
+        questionbanklang = int(Expertise.objects.get(fuid=user_id).selectedLanguage)
 
         dic["ffqbid"] = QuestionBank.objects.get(
             admin_programming_language=questionbanklang
         ).qbid
+        print(user_id)
         serializer = EvaluationSerializer(data=dic)
         if serializer.is_valid():
             serializer.save()
             # request.session['evaluation_id'] = Evaluation.objects.order_by('-evid')[0].evid
             evaluation_id = Evaluation.objects.order_by("-evid")[0].evid
 
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "evaluation_id": evaluation_id},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
@@ -205,19 +208,21 @@ def score(request, pk=None):
     if request.method == "POST":
         print("hello post ")
         print("request data", request.data)
+        evaluation_id = int(request.query_params["evid"])
+        user_id = int(request.query_params["ffuid"])
         dic = request.data
-        # print("questionbankevaluation_id id", questionbankevaluation_id)
+
         dic["fevid"] = evaluation_id
         # dic['fevid'] = None
         #   questionbankevaluation_id = 6
         # language = Expertise.objects.get(fuid=request.session['user_id']).programming_language
-        language = Expertise.objects.get(fuid=user_id).programming_language
-        temp_questionbank_id = QuestionBank.objects.get(
-            admin_programming_language=language
-        ).qbid
+        language = int(Expertise.objects.get(fuid=user_id).selectedLanguage)
+        temp_questionbank_id = int(
+            QuestionBank.objects.get(admin_programming_language=language).qbid
+        )
         queries = request.query_params
-        temp_questionbanklevel_id = QuestionBankLevel.objects.get(
-            fqbid=temp_questionbank_id, qlevel=queries["level"][0]
+        temp_questionbanklevel_id = QuestionsBankLevel.objects.get(
+            fqbid=temp_questionbank_id, qlevel=int(queries["level"][0])
         )
         #   temp_questionbank_id = QuestionBankEvaluation.objects.get(evqbid =questionbankevaluation_id).ffqbid
         #   queries = request.query_params
@@ -270,37 +275,35 @@ def time(request, pk=None):
         print("hello post ")
         print("request data", request.data)
         dic = request.data
-        # print("questionbankevaluation_id id", questionbankevaluation_id)
-        # dic['fevid'] = request.session['evaluation_id']
-        # dic['ffevid'] = None
-        #   questionbankevaluation_id = 6
-        # language = Expertise.objects.get(fuid=request.session['user_id']).programming_language
+
+        queries = request.query_params
+        evaluation_id = int(queries["evid"])
+        user_id = int(queries["ffuid"])
+
         dic["ffevid"] = evaluation_id
 
-        language = Expertise.objects.get(fuid=user_id).programming_language
-        temp_questionbank_id = QuestionBank.objects.get(
-            admin_programming_language=language
-        ).qbid
-        queries = request.query_params
-        temp_questionbanklevel_id = QuestionBankLevel.objects.get(
-            fqbid=temp_questionbank_id, qlevel=queries["level"][0]
+        language = int(Expertise.objects.get(fuid=user_id).selectedLanguage)
+        temp_questionbank_id = int(
+            QuestionBank.objects.get(admin_programming_language=language).qbid
         )
+
+        temp_questionbanklevel_id = int(
+            QuestionsBankLevel.objects.get(
+                fqbid=temp_questionbank_id, qlevel=queries["level"][0]
+            ).qblid
+        )
+
         #   temp_questionbank_id = QuestionBankEvaluation.objects.get(evqbid =questionbankevaluation_id).ffqbid
-        #   queries = request.query_params
-        temp_code_id = Code.objects.filter(fqblid=temp_questionbanklevel_id)[
-            int(queries["code_no"][0])
-        ].cid
-        # temp_question_id = Question.objects.filter(fcid = temp_code_id)[int(queries['question_no'][0])].qid
+
+        temp_code_id = int(
+            Code.objects.filter(fqblid=temp_questionbanklevel_id)[
+                int(queries["code_no"][0])
+            ].cid
+        )
+
         dic["fcfid"] = temp_code_id
-        # if dic['selected_answer'] == Question.objects.get(qid = temp_question_id).correct_option:
-        #     dic['marks'] =  Question.objects.get(qid = temp_question_id).marks
-        #     dic['decision'] = 1
-        # else:
-        #     dic['marks'] =  0
-        #     dic['decision'] = 0
         serializer = TimeSerializer(data=dic)
-        # print("questionbankevaluation_id id",questionbankevaluation_id)
-        print("question bank evaluation data", dic)
+
         if serializer.is_valid():
             serializer.save()
             return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
@@ -331,225 +334,138 @@ def getdecision(id):
 
 @api_view(["GET"])
 def download(request):
-    # global response_id
-    # print("============", response_id)4
     try:
-        print("quesry params", request.query_params)
-        print(request.query_params["user"])
-        user_id = int(request.query_params["user"])
-        question_ids = []
-        correct_answers = []
-        selected_answers = []
-        marks = []
-        decisions = []
-        code_ids = []
-        time_code = []
-        time_que = []
-        dic = collections.defaultdict(list)
-        program_language = Expertise.objects.get(fuid=user_id).selectedLanguage
-        levels = ["1", "2", "3"]
-        question_bank_id = QuestionBank.objects.get(
-            admin_programming_language=program_language
-        ).qbid
-        question_bank_level_ids = []
-        print(
-            "user id",
-            user_id,
-            "programming language",
-            program_language,
-            "question_bank_id",
-            question_bank_id,
-            "levels",
-            levels,
-            "code_ids",
-            code_ids,
-            "question_ids",
-            question_ids,
-            "correct_answers",
-            correct_answers,
-            "selected_answers",
-            selected_answers,
-            "marks",
-            marks,
-            "decisions",
-            decisions,
-        )
-        # print(QuestionBankLevel.objects.filter(fqbid = question_bank_id, qlevel = "1"))
+        user_ids = Demographic.objects.values_list("uid", flat=True)
 
-        for index, level in enumerate(levels):
-            question_bank_level_ids.append(
-                QuestionBankLevel.objects.filter(fqbid=question_bank_id, qlevel=level)[
-                    0
-                ].qblid
-            )
+        all_data = []
+        print(type(user_id[0]))
+        return Response(1)
 
-        # code_ids = []
+        # for user_id in user_ids:
+        #     program_language = Expertise.objects.get(fuid=int(user_id)).selectedLanguage
+        #     print(program_language)
+        #     levels = ["1", "2", "3"]
+        #     print(user_id)
+        #     question_bank_id = QuestionBank.objects.get(
+        #         admin_programming_language=program_language
+        #     ).qbid
 
-        for id in question_bank_level_ids:
-            code_ids.append(Code.objects.filter(fqblid=id)[0].cid)
-            code_ids.append(Code.objects.filter(fqblid=id)[1].cid)
-            # code_ids.append(Code.objects.filter(fqblid = id)[].cid)
+        #     question_bank_level_ids = [
+        #         int(
+        #             QuestionsBankLevel.objects.get(
+        #                 fqbid=question_bank_id, qlevel=level
+        #             ).qblid
+        #         )
+        #         for level in levels
+        #     ]
 
-        # question_ids = []
-        # correct_answers = []
-        # selected_answers = []
-        # marks = []
-        # decisions = []
-        for id in code_ids:
-            question_ids.append(Question.objects.filter(fcid=id)[0].qid)
-            question_ids.append(Question.objects.filter(fcid=id)[1].qid)
-            question_ids.append(Question.objects.filter(fcid=id)[2].qid)
-            question_ids.append(Question.objects.filter(fcid=id)[3].qid)
-            question_ids.append(Question.objects.filter(fcid=id)[4].qid)
+        #     code_ids = [
+        #         int(Code.objects.get(fqblid=id).cid) for id in question_bank_level_ids
+        #     ]
 
-        evaluation_id = Evaluation.objects.get(
-            ffuid=user_id, ffqbid=question_bank_id
-        ).evid
-        for id in question_ids:
-            correct_answers.append(Question.objects.get(qid=id).correct_option)
-            selected_answers.append(
-                Score.objects.get(fevid=evaluation_id, fqid=id).selected_answer
-            )
-            marks.append(Score.objects.get(fevid=evaluation_id, fqid=id).marks)
-            decisions.append(
-                getdecision(Score.objects.get(fevid=evaluation_id, fqid=id).decision)
-            )
+        #     question_ids = [int(Question.objects.get(fcid=id).qid) for id in code_ids]
 
-        times = Time.objects.filter(ffevid=evaluation_id)
-        for time in times:
-            time_code.append(time.code_read_time)
-            time_que.append(time.question_read_time)
+        #     int(
+        #         evaluation_id=Evaluation.objects.get(
+        #             ffuid=user_id, ffqbid=question_bank_id
+        #         ).evid
+        #     )
 
-        print(
-            "user id",
-            user_id,
-            "programming language",
-            program_language,
-            "levels",
-            levels,
-            "code_ids",
-            code_ids,
-            "question_ids",
-            question_ids,
-            "correct_answers",
-            correct_answers,
-            "selected_answers",
-            selected_answers,
-            "marks",
-            marks,
-            "decisions",
-            decisions,
-            "time code",
-            time_code,
-            "time question",
-            time_que,
-        )
+        #     correct_answers = [
+        #         int(Question.objects.get(qid=id).correct_option for id in question_ids)
+        #     ]
+        #     selected_answers = [
+        #         int(Score.objects.get(fevid=evaluation_id, fqid=id).selected_answer)
+        #         for id in question_ids
+        #     ]
+        #     marks = [
+        #         int(Score.objects.get(fevid=evaluation_id, fqid=id).marks)
+        #         for id in question_ids
+        #     ]
+        #     decisions = [
+        #         getdecision(Score.objects.get(fevid=evaluation_id, fqid=id).decision)
+        #         for id in question_ids
+        #     ]
 
-        # code1 = Code.objects.filter(fqblid = question_bank_level_id)[0].cid
-        # print("question_bank_level_id", question_bank_level_id1, "code", code1)
-        # question1 = Question.objects.filter(fcid = code1)[0].qid
-        # question1 = Question.objects.get(qid = question1).correct_option
-        iterative_question_id = []
-        for i in range(6):
-            iterative_question_id.append("Q1")
-            iterative_question_id.append("Q2")
-            iterative_question_id.append("Q3")
-            iterative_question_id.append("Q4")
-            iterative_question_id.append("Q5")
-        print("-------------------------------------------")
-        print(iterative_question_id, len(iterative_question_id))
-        n = len(question_ids)
-        print("n", n)
-        # responses = Apply.objects.filter(internship=response_id)
-        dic["User"] = [Demographic.objects.get(uid=user_id).name] * n
-        dic["Programming language"] = [getlanguage(program_language)] * n
-        dic["Level"] = (
-            (["E"] * int(n / 3)) + (["M"] * int(n / 3)) + (["H"] * int(n / 3))
-        )
-        dic["Code"] = (
-            (["c1"] * int(n / 6))
-            + (["c2"] * int(n / 6))
-            + (["c1"] * int(n / 6))
-            + (["c2"] * int(n / 6))
-            + (["c1"] * int(n / 6))
-            + (["c2"] * int(n / 6))
-        )
-        dic["Question"] = iterative_question_id
-        dic["Selected answer"] = selected_answers
-        dic["Correct answer"] = correct_answers
-        dic["Decision"] = decisions
-        dic["Marks"] = marks
-        dic["question_time"] = (
-            ([time_que[0]] * int(n / 6))
-            + ([time_que[1]] * int(n / 6))
-            + ([time_que[2]] * int(n / 6))
-            + ([time_que[3]] * int(n / 6))
-            + ([time_que[4]] * int(n / 6))
-            + ([time_que[5]] * int(n / 6))
-        )
-        dic["code_time"] = (
-            ([time_code[0]] * int(n / 6))
-            + ([time_code[1]] * int(n / 6))
-            + ([time_code[2]] * int(n / 6))
-            + ([time_code[3]] * int(n / 6))
-            + ([time_code[4]] * int(n / 6))
-            + ([time_code[5]] * int(n / 6))
-        )
-        for key in dic:
-            print(key, len(dic[key]))
-        # print(([levels[0]]*int(n/2)) + (([levels[1]]*int(n/2))))
-        print(dic)
-        # for i in range(len(responses)):
-        #     dic['user'].append(responses[i].user.username)
-        #     dic['user_name'].append(responses[i].user_name)
-        #     dic['user_email'].append(responses[i].user_email)
-        #     dic['phone_number'].append(responses[i].phone_number)
-        #     dic['sem'].append(responses[i].sem)
-        #     dic['cpi'].append(responses[i].cpi)
-        #     dic['precentage_10'].append(responses[i].precentage_10)
-        #     dic['precentage_12'].append(responses[i].precentage_12)
-        # print(dic)
-        df = pd.DataFrame(dic)
-        print(df.head())
-        response = HttpResponse(content_type="text/csv")
-        # your filename
-        response["Content-Disposition"] = 'attachment; filename="data.csv"'
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                "S.No.",
-                "User",
-                "Programming language",
-                "Level",
-                "Code",
-                "Code Read Time",
-                "Question",
-                "Question Read Time",
-                "Selected answer",
-                "Correct answer",
-                "Decision",
-                "Marks",
-            ]
-        )
-        for ind in range(df.shape[0]):
-            writer.writerow(
-                [
-                    ind,
-                    df["User"][ind],
-                    df["Programming language"][ind],
-                    df["Level"][ind],
-                    df["Code"][ind],
-                    df["code_time"][ind],
-                    df["Question"][ind],
-                    df["question_time"][ind],
-                    df["Selected answer"][ind],
-                    df["Correct answer"][ind],
-                    df["Decision"][ind],
-                    df["Marks"][ind],
-                ]
-            )
+        #     times = Time.objects.filter(ffevid=evaluation_id)
+        #     time_code = [time.code_read_time for time in times]
+        #     time_que = [time.question_read_time for time in times]
 
-        return response
+        #     iterative_question_id = [f"Q{i+1}" for i in range(5)] * len(levels)
+
+        #     dic = collections.defaultdict(list)
+        #     n = len(question_ids)
+
+        #     dic["User"] = [Demographic.objects.get(uid=user_id).name] * n
+        #     dic["Programming language"] = [getlanguage(program_language)] * n
+        #     dic["Level"] = (
+        #         (["E"] * int(n / 3)) + (["M"] * int(n / 3)) + (["H"] * int(n / 3))
+        #     )
+        #     dic["Code"] = (
+        #         (["c1"] * int(n / 6))
+        #         + (["c2"] * int(n / 6)) * 2
+        #         + (["c1"] * int(n / 6))
+        #         + (["c2"] * int(n / 6))
+        #     )
+        #     dic["Question"] = iterative_question_id
+        #     dic["Selected answer"] = selected_answers
+        #     dic["Correct answer"] = correct_answers
+        #     dic["Decision"] = decisions
+        #     dic["Marks"] = marks
+        #     dic["question_time"] = (
+        #         ([time_que[0]] * int(n / 6)) * 2
+        #         + ([time_que[1]] * int(n / 6)) * 2
+        #         + ([time_que[2]] * int(n / 6)) * 2
+        #     )
+        #     dic["code_time"] = (
+        #         ([time_code[0]] * int(n / 6)) * 2
+        #         + ([time_code[1]] * int(n / 6)) * 2
+        #         + ([time_code[2]] * int(n / 6)) * 2
+        #     )
+
+        #     all_data.append(pd.DataFrame(dic))
+
+        # all_data_df = pd.concat(all_data, ignore_index=True)
+
+        # response = HttpResponse(content_type="text/csv")
+        # response["Content-Disposition"] = 'attachment; filename="all_data.csv"'
+        # writer = csv.writer(response)
+        # writer.writerow(
+        #     [
+        #         "S.No.",
+        #         "User",
+        #         "Programming language",
+        #         "Level",
+        #         "Code",
+        #         "Code Read Time",
+        #         "Question",
+        #         "Question Read Time",
+        #         "Selected answer",
+        #         "Correct answer",
+        #         "Decision",
+        #         "Marks",
+        #     ]
+        # )
+
+        # for ind in range(all_data_df.shape[0]):
+        #     writer.writerow(
+        #         [
+        #             ind,
+        #             all_data_df["User"][ind],
+        #             all_data_df["Programming language"][ind],
+        #             all_data_df["Level"][ind],
+        #             all_data_df["Code"][ind],
+        #             all_data_df["code_time"][ind],
+        #             all_data_df["Question"][ind],
+        #             all_data_df["question_time"][ind],
+        #             all_data_df["Selected answer"][ind],
+        #             all_data_df["Correct answer"][ind],
+        #             all_data_df["Decision"][ind],
+        #             all_data_df["Marks"][ind],
+        #         ]
+        #     )
+
+        # return response
     except Exception as e:
         print("Exception", e)
         return Response(
@@ -612,7 +528,10 @@ def questionbank(request, pk=None):
             question_bank_id = QuestionBank.objects.order_by("-qbid")[0].qbid
 
             # print("question_bank_id", request.session['question_bank_id'])
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "question_bank_id": question_bank_id},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
@@ -650,7 +569,13 @@ def questionbanklevel(request, pk=None):
                 0
             ].qblid
 
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {
+                    "msg": "Data Created",
+                    "question_bank_level_id": question_bank_level_id,
+                },
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
@@ -685,7 +610,10 @@ def code(request, pk=None):
             # request.session['code_id'] = Code.objects.order_by('-cid')[0].cid
             code_id = Code.objects.order_by("-cid")[0].cid
 
-            return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Data Created", "code_id": code_id},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
@@ -730,17 +658,25 @@ def question(request, pk=None):
 def getcode(request):
     global user_code_id
     if request.method == "GET":
-        programming_language = Expertise.objects.get(fuid=user_id).selectedLanguage
-        question_bank_id = QuestionBank.objects.get(
-            admin_programming_language=programming_language
-        ).qbid
         queries = request.query_params
-        level = QuestionsBankLevel.objects.get(
-            fqbid=question_bank_id, qlevel=queries["level"][0]
-        ).qblid
-        # request.session['question_code_id'] = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
-        user_code_id = Code.objects.filter(fqblid=level)[int(queries["code"][0])].cid
+        level = int(queries["level"])
+        codeNo = int(queries["code"])
+        user_id = int(queries["ffuid"])
+        programming_language = int(Expertise.objects.get(fuid=user_id).selectedLanguage)
 
+        question_bank_id = int(
+            QuestionBank.objects.get(
+                admin_programming_language=programming_language
+            ).qbid
+        )
+
+        qblid = int(
+            QuestionsBankLevel.objects.get(fqbid=question_bank_id, qlevel=level).qblid
+        )
+
+        # request.session['question_code_id'] = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
+        user_code_id = int(Code.objects.filter(fqblid=qblid)[codeNo].cid)
+        print(user_code_id)
         # stu = Code.objects.get(cid=request.session['question_code_id'])
         stu = Code.objects.get(cid=user_code_id)
         serializer = CodeSerializer(stu)
@@ -755,9 +691,9 @@ def getquestion(request):
         # print("quesry params", request.query_params)
         # # user_id = 1
         queries = request.query_params
-        question_code_id = Question.objects.filter(fcid=user_code_id)[
-            int(queries["question"][0])
-        ].qid
+        index = int(queries["question"][0])
+        question_code_id = Question.objects.filter(fcid=11)[index].qid
+        print(question_code_id)
         stu = Question.objects.get(qid=question_code_id)
         serializer = QuestionSerializer(stu)
         return Response(serializer.data)
