@@ -335,12 +335,183 @@ def getdecision(id):
 @api_view(["GET"])
 def download(request):
     try:
+        df = pd.DataFrame()
         user_ids = Demographic.objects.values_list("uid", flat=True)
 
         all_data = []
-        print(type(user_id[0]))
-        return Response(1)
+        for user_id in user_ids:
+            uid = int(user_id)
+            question_ids = []
+            correct_answers = []
+            selected_answers = []
+            marks = []
+            decisions = []
+            code_ids = []
+            time_code = []
+            time_que = []
+            dic = collections.defaultdict(list)
+            expertise = Expertise.objects.filter(fuid=uid)
+            if len(expertise) == 0:
+                continue
+            program_language = int(expertise[0].selectedLanguage)
+            levels = [1, 2, 3]
+            question_bank_id = QuestionBank.objects.filter(
+                admin_programming_language=program_language
+            )
+            if len(question_bank_id) == 0:
+                continue
+            question_bank_id = int(question_bank_id.first().qbid)
 
+            question_bank_level_ids = []
+
+            for level in levels:
+                temp = QuestionsBankLevel.objects.filter(
+                    fqbid=question_bank_id, qlevel=level
+                )
+                if len(temp) == 0:
+                    continue
+                question_bank_level_ids.append(int(temp[0].qblid))
+
+            for id in question_bank_level_ids:
+                temp = Code.objects.filter(fqblid=id)
+                if len(temp) == 0:
+                    continue
+                if len(temp) == 1:
+                    code_ids.append(int(temp[0].cid))
+                if len(temp) == 2:
+                    code_ids.append(int(temp[1].cid))
+
+            for id in code_ids:
+                temp = Question.objects.filter(fcid=id)
+                if len(temp) == 0:
+                    continue
+                question_ids.append(int(temp[0].qid))
+                question_ids.append(int(temp[1].qid))
+                question_ids.append(int(temp[2].qid))
+                question_ids.append(int(temp[3].qid))
+                question_ids.append(int(temp[4].qid))
+
+            evaluations_id = Evaluation.objects.filter(
+                ffuid=user_id, ffqbid=question_bank_id
+            )
+
+            if len(evaluations_id) == 0:
+                continue
+            evaluation_id = int(evaluations_id.first().evid)
+
+            for id in question_ids:
+                temp1 = Question.objects.filter(qid=id)
+                if len(temp1) == 0:
+                    continue
+                correct_answers.append(int(temp1.first().correct_option))
+
+                temp = Score.objects.filter(fevid=evaluation_id, fqid=id)
+                if len(temp) == 0:
+                    continue
+                temp = temp.first()
+                selected_answers.append(temp.selected_answer)
+                marks.append(temp.marks)
+                decisions.append(temp.decision)
+
+            times = Time.objects.filter(ffevid=evaluation_id)
+            for time in times:
+                time_code.append(time.code_read_time)
+
+            print(
+                "user id",
+                uid,
+                "programming language",
+                program_language,
+                "levels",
+                levels,
+                "code_ids",
+                code_ids,
+                "question_ids",
+                question_ids,
+                "correct_answers",
+                correct_answers,
+                "selected_answers",
+                selected_answers,
+                "marks",
+                marks,
+                "decisions",
+                decisions,
+                "time code",
+                time_code,
+                "time question",
+                time_que,
+            )
+
+            iterative_question_id = []
+            for i in range(6):
+                iterative_question_id.append("Q1")
+                iterative_question_id.append("Q2")
+                iterative_question_id.append("Q3")
+                iterative_question_id.append("Q4")
+                iterative_question_id.append("Q5")
+
+            n = len(question_ids)
+            dic["User"] = [Demographic.objects.get(uid=user_id).name] * n
+            dic["Programming language"] = [getlanguage(program_language)] * n
+            dic["Level"] = (
+                (["E"] * int(n / 3)) + (["M"] * int(n / 3)) + (["H"] * int(n / 3))
+            )
+            dic["Code"] = (
+                (["c1"] * int(n / 6))
+                + (["c2"] * int(n / 6))
+                + (["c1"] * int(n / 6))
+                + (["c2"] * int(n / 6))
+                + (["c1"] * int(n / 6))
+                + (["c2"] * int(n / 6))
+            )
+            dic["Question"] = iterative_question_id
+            dic["Selected answer"] = selected_answers
+            dic["Correct answer"] = correct_answers
+            dic["Decision"] = decisions
+            dic["Marks"] = marks
+
+            dic["code_reading_time"] = time_code
+
+            temp = pd.DataFrame([dic])
+            df = pd.concat([df, temp], ignore_index=True)
+
+        response = HttpResponse(content_type="text/csv")
+        # your filename
+        response["Content-Disposition"] = 'attachment; filename="data.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "S.No.",
+                "User",
+                "Programming language",
+                "Level",
+                "Code",
+                "Code Read Time",
+                "Question",
+                "Selected answer",
+                "Correct answer",
+                "Decision",
+                "Marks",
+            ]
+        )
+        for ind in range(df.shape[0]):
+            writer.writerow(
+                [
+                    ind,
+                    df["User"][ind],
+                    df["Programming language"][ind],
+                    df["Level"][ind],
+                    df["Code"][ind],
+                    df["code_reading_time"][ind],
+                    df["Question"][ind],
+                    df["Selected answer"][ind],
+                    df["Correct answer"][ind],
+                    df["Decision"][ind],
+                    df["Marks"][ind],
+                ]
+            )
+
+        return response
         # for user_id in user_ids:
         #     program_language = Expertise.objects.get(fuid=int(user_id)).selectedLanguage
         #     print(program_language)
