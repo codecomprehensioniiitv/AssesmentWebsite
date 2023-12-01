@@ -362,13 +362,12 @@ def download(request):
 
         dic["Question"] = []
         levelArr = [0] * 10 + [1] * 10 + [2] * 10
-        dic["Level"] = levelArr
+        dic["Level"] = []
 
         user_ids = Demographic.objects.values_list("uid", flat=True)
 
         all_data = []
         for user_id in user_ids:
-            dic["Question"] = dic["Question"] + iterative_question_id
             uid = int(user_id)
             question_ids = []
             correct_answers = []
@@ -461,6 +460,9 @@ def download(request):
                 [getlanguage(program_language)] * n
             )
 
+            # this added
+            dic["Question"] = dic["Question"] + iterative_question_id
+            dic["Level"] = dic["Level"] + levelArr
             dic["Selected answer"] = dic["Selected answer"] + (selected_answers)
             dic["Correct answer"] = dic["Correct answer"] + (correct_answers)
             print("LLD")
@@ -738,8 +740,8 @@ def getUsersData(request):
             "Frequency",
         ]
     )
-    print("K")
-    for ind in range(len(df["UserID"])):
+    for ind in range(df.shape[0]):
+        print(ind)
         writer.writerow(
             [
                 ind,
@@ -754,7 +756,7 @@ def getUsersData(request):
             ]
         )
 
-        return response
+    return response
 
 
 #### Questionsgi
