@@ -175,4 +175,5 @@ CORS_ALLOW_HEADERS = [
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Add the origin(s) of your frontend application
+    "http://codecomprehension.co/",
 ]
