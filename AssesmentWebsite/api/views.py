@@ -328,7 +328,7 @@ def getlanguage(id):
     if id == 2:
         return "C++"
     if id == 3:
-        return "Java"
+        return "Javascript"
 
 
 def getdecision(id):
@@ -354,11 +354,11 @@ def download(request):
 
         iterative_question_id = []
         for i in range(6):
-            iterative_question_id.append("Q1")
-            iterative_question_id.append("Q2")
-            iterative_question_id.append("Q3")
-            iterative_question_id.append("Q4")
-            iterative_question_id.append("Q5")
+            iterative_question_id.append("1")
+            iterative_question_id.append("2")
+            iterative_question_id.append("3")
+            iterative_question_id.append("4")
+            iterative_question_id.append("5")
 
         dic["Question"] = []
         levelArr = [0] * 10 + [1] * 10 + [2] * 10
