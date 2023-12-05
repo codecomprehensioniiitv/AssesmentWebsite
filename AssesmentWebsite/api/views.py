@@ -299,8 +299,6 @@ def time(request, pk=None):
         )
         print("E")
 
-        #   temp_questionbank_id = QuestionBankEvaluation.objects.get(evqbid =questionbankevaluation_id).ffqbid
-
         temp_code_id = int(
             Code.objects.filter(fqblid=temp_questionbanklevel_id)[
                 int(queries["code_no"][0])
@@ -933,9 +931,9 @@ def getcode(request):
         programming_language = int(Expertise.objects.get(fuid=user_id).selectedLanguage)
 
         question_bank_id = int(
-            QuestionBank.objects.get(
-                admin_programming_language=programming_language
-            ).qbid
+            QuestionBank.objects.filter(admin_programming_language=programming_language)
+            .first()
+            .qbid
         )
 
         qblid = int(
