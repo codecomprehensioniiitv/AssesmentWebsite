@@ -27,7 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["assesment-web.onrender.com", "127.0.0.1", "localhost"]
 
+import cloudinary
 
+cloudinary.config(
+    cloud_name="dbnqwwfaq",
+    api_key="756576113911652",
+    api_secret="LC2zSXPIVrUGwTsbhxZbf9dFALg",
+)
 # Application definition
 
 INSTALLED_APPS = [

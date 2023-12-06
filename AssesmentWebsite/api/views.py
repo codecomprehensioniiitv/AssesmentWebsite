@@ -880,6 +880,9 @@ def questionbanklevel(request, pk=None):
         return Response({"msg": "Data Deleted"})
 
 
+from cloudinary.uploader import upload
+
+
 @api_view(["GET", "POST", "DELETE"])
 def code(request, pk=None):
     global code_id
@@ -901,6 +904,12 @@ def code(request, pk=None):
 
         serializer = CodeSerializer(data=dic)
         if serializer.is_valid():
+            code_image = request.data.get("code_image")
+            result = upload(code_image)
+
+            # Update serializer data with the Cloudinary image URL
+            serializer.validated_data["code_image"] = result["url"]
+
             serializer.save()
             # request.session['code_id'] = Code.objects.order_by('-cid')[0].cid
             code_id = Code.objects.order_by("-cid")[0].cid
@@ -979,8 +988,15 @@ def getcode(request):
         print(user_code_id)
         # stu = Code.objects.get(cid=request.session['question_code_id'])
         stu = Code.objects.get(cid=user_code_id)
+
         serializer = CodeSerializer(stu)
-        return Response(serializer.data)
+        data = serializer.data
+
+        # Add the Cloudinary image URL to the serialized data
+        cloudinary_url, options = cloudinary_url(stu.code_image.public_id)
+        data["code_image"] = cloudinary_url
+
+        return Response(data)
 
 
 @api_view(["GET"])

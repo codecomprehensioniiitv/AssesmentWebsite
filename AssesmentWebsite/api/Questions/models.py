@@ -21,10 +21,13 @@ class QuestionsBankLevel(models.Model):
     qlevel = models.CharField(choices=level_choices, max_length=100)
 
 
+from cloudinary.models import CloudinaryField, cloudinary
+
+
 class Code(models.Model):
     cid = models.AutoField(primary_key=True)
     fqblid = models.ForeignKey(QuestionsBankLevel, on_delete=models.CASCADE, null=True)
-    code_image = models.ImageField()
+    code_image = CloudinaryField("code_image")
     code_text = models.CharField(max_length=500, null=True)
     code_time = models.FloatField(null=True)
     # code_read_time = models.IntegerField(null=True)
@@ -34,10 +37,16 @@ class Code(models.Model):
     @property
     def imageURL(self):
         try:
-            url = self.image.url
+            url = self.code_image.url
         except:
             url = ""
         return url
+
+    def get_cloudinary_url(self):
+        # Access the public ID from the CloudinaryField
+        public_id = self.code_image.public_id
+        # Generate the image URL using Cloudinary's format
+        return cloudinary.utils.cloudinary_url(public_id)[0]
 
 
 class Question(models.Model):
