@@ -107,6 +107,20 @@ def expertise(request, pk=None):
 
 
 @api_view(["POST"])
+def language(request):
+    dic = request.data
+    # dic['fuid'] = request.session['user_id']
+    user_id = int(request.query_params["ffuid"])
+    dic["fuid"] = user_id
+
+    serializer = LanguageSerializer(data=dic)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"msg": "Data Created"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
 def login1(request):
     if request.method == "POST":
         json_data = request.body
@@ -701,9 +715,9 @@ def getUsersData(request):
     dic["Role"] = []
     dic["Gender"] = []
     dic["Age"] = []
-    dic["Experimental_Language_Name"] = []
-    dic["Expertise_In_Experimental_Language"] = []
-    dic["Time_In_Experimental_Language"] = []
+    dic["Language_Name"] = []
+    dic["Expertise_In_Language"] = []
+    dic["Time_In_Language"] = []
     dic["Frequency"] = []
     for user in users:
         exp = Expertise.objects.filter(fuid=user.uid)
@@ -715,10 +729,25 @@ def getUsersData(request):
         dic["Gender"].append(getGender(user.gender))
         dic["Age"].append(user.age)
 
-        dic["Experimental_Language_Name"].append(getlanguage(int(exp.selectedLanguage)))
-        dic["Expertise_In_Experimental_Language"].append(getLevel(exp.level))
-        dic["Time_In_Experimental_Language"].append(exp.duration)
+        dic["Language_Name"].append(getlanguage(int(exp.selectedLanguage)))
+        dic["Expertise_In_Language"].append(getLevel(exp.level))
+        dic["Time_In_Language"].append(exp.duration)
         dic["Frequency"].append(exp.time)
+
+        # OTHER LANGUAGES CODE IS WRITTEN HERE ::
+        langs = Language.objects.filter(fuid=user.uid)
+
+        for lang in langs:
+            dic["UserID"].append(user.uid)
+            dic["Role"].append(getRole(user.profession))
+            dic["Gender"].append(getGender(user.gender))
+            dic["Age"].append(user.age)
+
+            dic["Language_Name"].append(getlanguage(int(lang.selectedLanguage)))
+            dic["Expertise_In_Language"].append(getLevel(lang.level))
+            dic["Time_In_Language"].append(lang.duration)
+            dic["Frequency"].append(lang.time)
+
     print(dic)
     df = pd.DataFrame(dic)
     response = HttpResponse(content_type="text/csv")
@@ -747,9 +776,9 @@ def getUsersData(request):
                 df["Role"][ind],
                 df["Gender"][ind],
                 df["Age"][ind],
-                df["Experimental_Language_Name"][ind],
-                df["Expertise_In_Experimental_Language"][ind],
-                df["Time_In_Experimental_Language"][ind],
+                df["Language_Name"][ind],
+                df["Expertise_In_Language"][ind],
+                df["Time_In_Language"][ind],
                 df["Frequency"][ind],
             ]
         )

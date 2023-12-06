@@ -9,6 +9,7 @@ urlpatterns = [
     path("expertise/", views.expertise, name="expertise"),
     path("expertise/<pk>", views.expertise, name="expertise"),
     path("login/", views.login1, name="login"),
+    path("language/", views.language, name="language"),
     #  Questions
     path("questionbank/", views.questionbank, name="questionbank"),
     path("questionbank/<pk>", views.questionbank, name="questionbank2"),

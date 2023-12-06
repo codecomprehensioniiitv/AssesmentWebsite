@@ -36,3 +36,14 @@ class Expertise(models.Model):
     level = models.CharField(choices=level_choices, max_length=100)
     duration = models.CharField(choices=duration_choices, max_length=100)
     time = models.IntegerField()
+
+
+class Language(models.Model):
+    lid = models.AutoField(primary_key=True)
+    fuid = models.ForeignKey(
+        Demographic, related_name="expertise_id", null=True, on_delete=models.PROTECT
+    )
+    selectedLanguage = models.CharField(choices=language_choices, max_length=100)
+    level = models.CharField(choices=level_choices, max_length=100)
+    duration = models.CharField(choices=duration_choices, max_length=100)
+    time = models.IntegerField()
