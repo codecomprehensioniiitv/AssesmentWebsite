@@ -80,10 +80,10 @@ WSGI_APPLICATION = "AssesmentWebsite.wsgi.application"
 import dj_database_url
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "mbdb/db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default="postgres://admin:unP7jlZNqyRMfQR8U8aOwp8dJvOKB0sb@dpg-clgsrnb1hq4c73bkb420-a.oregon-postgres.render.com/db_5ckd",
+        conn_max_age=600,
+    )
 }
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
