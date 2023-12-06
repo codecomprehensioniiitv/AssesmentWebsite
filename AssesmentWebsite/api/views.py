@@ -966,7 +966,9 @@ def getcode(request):
         level = int(queries["level"])
         codeNo = int(queries["code"])
         user_id = int(queries["ffuid"])
-        programming_language = int(Expertise.objects.get(fuid=user_id).selectedLanguage)
+        programming_language = int(
+            Expertise.objects.filter(fuid=user_id).first().selectedLanguage
+        )
 
         question_bank_id = int(
             QuestionBank.objects.filter(admin_programming_language=programming_language)
@@ -992,10 +994,14 @@ def getcode(request):
         serializer = CodeSerializer(stu)
         data = serializer.data
 
-        # Add the Cloudinary image URL to the serialized data
-        cloudinary_url, options = cloudinary_url(stu.code_image.public_id)
-        data["code_image"] = cloudinary_url
+        # # Add the Cloudinary image URL to the serialized data
+        # cloudinary_url, options = cloudinary_url(stu.code_image.public_id)
+        # data["code_image"] = cloudinary_url
+        url = data["code_image"]
+        index = url.find("image/upload/")
+        url = url[index + len("image/upload/") :]
 
+        data["code_image"] = url
         return Response(data)
 
 
