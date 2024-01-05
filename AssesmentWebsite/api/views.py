@@ -341,6 +341,12 @@ def getlanguage(id):
         return "C++"
     if id == 3:
         return "Javascript"
+    if id == 4:
+        return "Java"
+    if id == 5:
+        return "Ruby"
+    if id == 6:
+        return "Go"
 
 
 def getdecision(id):

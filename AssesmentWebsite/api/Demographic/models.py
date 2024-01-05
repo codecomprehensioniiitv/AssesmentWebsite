@@ -4,7 +4,14 @@ gender_choices = (("1", "Female"), ("2", "Male"), ("3", "NaN"))
 
 profession_choices = (("1", "Student"), ("2", "Industrialist"), ("3", "Professor"))
 
-language_choices = (("1", "Python"), ("2", "C++"), ("3", "Javascript"))
+language_choices = (
+    ("1", "Python"),
+    ("2", "C++"),
+    ("3", "Javascript"),
+    ("4", "Java"),
+    ("5", "Ruby"),
+    ("6", "Go"),
+)
 
 level_choices = (("1", "Beginner"), ("2", "Intermediate"), ("3", "Expert"))
 duration_choices = (("1", "<1 year"), ("2", "1-3 years"), ("3", ">3 years"))
