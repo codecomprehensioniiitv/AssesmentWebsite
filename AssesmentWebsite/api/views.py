@@ -1026,3 +1026,81 @@ def getquestion(request):
         stu = Question.objects.get(qid=question_code_id)
         serializer = QuestionSerializer(stu)
         return Response(serializer.data)
+
+
+@api_view(["GET"])
+def getQuestionsBankPDF(request):
+    if request.method == "GET":
+        dic = {}
+        dic["Experimental Language"] = []
+        dic["Level"] = []
+        dic["Question"] = []
+        dic["Option 1"] = []
+        dic["Option 2"] = []
+        dic["Option 3"] = []
+        dic["Option 4"] = []
+        dic["Correct Option"] = []
+        dic["Marks"] = []
+        dic["Code_Display_Time"] = []
+
+        languages = QuestionBank.objects.all()
+
+        for language in languages:
+            qbls = QuestionsBankLevel.objects.filter(fqbid=language.qbid)
+            if len(qbls) == 0:
+                continue
+            for qbl in qbls:
+                codes = Code.objects.filter(fqblid=qbl.qblid)
+                for code in codes:
+                    questions = Question.objects.filter(fcid=code.cid)
+
+                    for question in questions:
+                        dic["Experimental Language"].append(
+                            getlanguage(int(language.admin_programming_language))
+                        )
+                        dic["Level"].append(getLevel((qbl.qlevel)))
+                        dic["Question"].append(question.question_text)
+                        dic["Option 1"].append(question.option1)
+                        dic["Option 2"].append(question.option2)
+                        dic["Option 3"].append(question.option3)
+                        dic["Option 4"].append(question.option4)
+                        dic["Correct Option"].append(question.correct_option)
+                        dic["Marks"].append(question.marks)
+                        dic["Code_Display_Time"].append(question.question_time)
+
+        print(dic)
+        df = pd.DataFrame(dic)
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="questions.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Experimental Language",
+                "Level",
+                "Question",
+                "Option 1",
+                "Option 2",
+                "Option 3",
+                "Option 4",
+                "Correct Option",
+                "Marks",
+                "Code_Display_Time",
+            ]
+        )
+
+        for ind in range(df.shape[0]):
+            writer.writerow(
+                [
+                    df["Experimental Language"][ind],
+                    df["Level"][ind],
+                    df["Question"][ind],
+                    df["Option 1"][ind],
+                    df["Option 2"][ind],
+                    df["Option 3"][ind],
+                    df["Option 4"][ind],
+                    df["Correct Option"][ind],
+                    df["Marks"][ind],
+                    df["Code_Display_Time"][ind],
+                ]
+            )
+        return response

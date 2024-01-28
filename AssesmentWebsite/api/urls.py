@@ -31,4 +31,5 @@ urlpatterns = [
     path("time/", views.time, name="time"),
     path("time/<pk>", views.time, name="time2"),
     path("getcsv/", views.getCSV, name="getCSV"),
+    path("getQuestionSheet", views.getQuestionsBankPDF, name="getQuestionSheet"),
 ]
