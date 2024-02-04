@@ -367,7 +367,7 @@ def download(request):
         dic["Correct answer"] = []
         dic["Selected answer"] = []
         dic["Marks"] = []
-
+        dic["question_reading_time"] = []
         dic["Decision"] = []
 
         iterative_question_id = []
@@ -393,6 +393,7 @@ def download(request):
             marks = []
             decisions = []
             code_ids = []
+            question_reading_times = []
             time_code = []
             print(len(dic["Question"]))
             expertise = Expertise.objects.filter(fuid=uid)
@@ -439,6 +440,11 @@ def download(request):
                 question_ids.append(int(temp[2].qid))
                 question_ids.append(int(temp[3].qid))
                 question_ids.append(int(temp[4].qid))
+                question_reading_times.append(temp[0].question_time)
+                question_reading_times.append(temp[1].question_time)
+                question_reading_times.append(temp[2].question_time)
+                question_reading_times.append(temp[3].question_time)
+                question_reading_times.append(temp[4].question_time)
 
             evaluations_id = Evaluation.objects.filter(
                 ffuid=user_id, ffqbid=question_bank_id
@@ -488,7 +494,9 @@ def download(request):
                 getdecision(decision) for decision in decisions
             ]
             dic["Marks"] = dic["Marks"] + (marks)
-
+            dic["question_reading_time"] = dic["question_reading_time"] + (
+                question_reading_times
+            )
             dic["code_reading_time"] = dic["code_reading_time"] + (time_code)
         print
         print(len(dic["code_reading_time"]))
@@ -510,7 +518,7 @@ def download(request):
                 "Programming language",
                 "Level",
                 "Code Read Time",
-                "Question",
+                "Question Time" "Question",
                 "Selected answer",
                 "Correct answer",
                 "Decision",
@@ -525,6 +533,7 @@ def download(request):
                     df["Programming language"][ind],
                     df["Level"][ind],
                     df["code_reading_time"][ind],
+                    df["question_reading_time"][ind],
                     df["Question"][ind],
                     df["Selected answer"][ind],
                     df["Correct answer"][ind],
