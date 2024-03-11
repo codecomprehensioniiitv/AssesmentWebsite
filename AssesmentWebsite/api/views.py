@@ -735,6 +735,23 @@ def getUsersData(request):
     dic["Expertise_In_Language"] = []
     dic["Time_In_Language"] = []
     dic["Frequency"] = []
+
+    dic["OL1_Name"] = []
+    dic["OL2_Name"] = []
+    dic["OL3_Name"] = []
+
+    dic["OL1_Expertise"] = []
+    dic["OL2_Expertise"] = []
+    dic["OL3_Expertise"] = []
+
+    dic["OL1_Time"] = []
+    dic["OL2_Time"] = []
+    dic["OL3_Time"] = []
+
+    dic["OL1_Frequency"] = []
+    dic["OL2_Frequency"] = []
+    dic["OL3_Frequency"] = []
+        
     for user in users:
         exp = Expertise.objects.filter(fuid=user.uid)
         if len(exp) == 0:
@@ -753,16 +770,52 @@ def getUsersData(request):
         # OTHER LANGUAGES CODE IS WRITTEN HERE ::
         langs = Language.objects.filter(fuid=user.uid)
 
-        for lang in langs:
-            dic["UserID"].append(user.uid)
-            dic["Role"].append(getRole(user.profession))
-            dic["Gender"].append(getGender(user.gender))
-            dic["Age"].append(user.age)
+        # for lang in langs:
+        #     dic["UserID"].append(user.uid)
+        #     dic["Role"].append(getRole(user.profession))
+        #     dic["Gender"].append(getGender(user.gender))
+        #     dic["Age"].append(user.age)
 
-            dic["Language_Name"].append(getlanguage(int(lang.selectedLanguage)))
-            dic["Expertise_In_Language"].append(getLevel(lang.level))
-            dic["Time_In_Language"].append(lang.duration)
-            dic["Frequency"].append(lang.time)
+        #     dic["Language_Name"].append(getlanguage(int(lang.selectedLanguage)))
+        #     dic["Expertise_In_Language"].append(getLevel(lang.level))
+        #     dic["Time_In_Language"].append(lang.duration)
+        #     dic["Frequency"].append(lang.time)
+
+        if len(langs) < 0 : 
+            dic["OL1_Name"].append(" ")
+            dic["OL1_Expertise"].append(" ")
+            dic["OL1_Time"].append(" ")
+            dic["OL1_Frequency"].append(" ")
+        else : 
+            dic["OL1_Name"].append(getlanguage(int(langs[0].selectedLanguage)))
+            dic["OL1_Expertise"].append(getLevel(langs[0].level))
+            dic["OL1_Time"].append(langs[0].duration)
+            dic["OL1_Frequency"].append(langs[0].time) 
+        if len(langs) < 1 : 
+            dic["OL2_Name"].append(" ")
+            dic["OL2_Expertise"].append(" ")
+            dic["OL2_Time"].append(" ")
+            dic["OL2_Frequency"].append(" ")
+        else : 
+            dic["OL2_Name"].append(getlanguage(int(langs[1].selectedLanguage)))
+            dic["OL2_Expertise"].append(getLevel(langs[1].level))
+            dic["OL2_Time"].append(langs[1].duration)
+            dic["OL2_Frequency"].append(langs[1].time)
+        
+
+        if len(langs) < 2 : 
+            dic["OL3_Name"].append(" ")
+            dic["OL3_Expertise"].append(" ")
+            dic["OL3_Time"].append(" ")
+            dic["OL3_Frequency"].append(" ")
+        else : 
+            dic["OL3_Name"].append(getlanguage(int(langs[2].selectedLanguage)))
+            dic["OL3_Expertise"].append(getLevel(langs[2].level))
+            dic["OL3_Time"].append(langs[2].duration)
+            dic["OL3_Frequency"].append(langs[2].time) 
+        
+
+
 
     print(dic)
     df = pd.DataFrame(dic)
@@ -781,6 +834,18 @@ def getUsersData(request):
             "Expertise_In_Experimental_Language",
             "Time_In_Experimental_Language",
             "Frequency",
+            "OL1_Name", 
+            "OL2_Name",
+            "OL3_Name",
+            "OL1_Time",
+            "OL2_Time",
+            "OL3_Time",
+            "OL1_Expertise",
+            "OL2_Expertise",
+            "OL3_Expertise",
+            "OL1_Frequency",
+            "OL2_Frequency",
+            "OL3_Frequency"
         ]
     )
     for ind in range(df.shape[0]):
@@ -796,6 +861,18 @@ def getUsersData(request):
                 df["Expertise_In_Language"][ind],
                 df["Time_In_Language"][ind],
                 df["Frequency"][ind],
+                df["OL1_Name"][ind],
+                df["OL2_Name"][ind],
+                df["OL3_Name"][ind],
+                df["OL1_Time"][ind],
+                df["OL2_Time"][ind],
+                df["OL3_Time"][ind],
+                df["OL1_Expertise"][ind],
+                df["OL2_Expertise"][ind],
+                df["OL3_Expertise"][ind],
+                df["OL1_Frequency"][ind],
+                df["OL2_Frequency"][ind],
+                df["OL3_Frequency"][ind]
             ]
         )
 

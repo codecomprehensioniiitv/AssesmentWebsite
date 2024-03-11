@@ -26,10 +26,11 @@ urlpatterns = [
     path("evaluation/<pk>", views.evaluation, name="evaluation2"),
     path("score/", views.score, name="score"),
     path("score/<pk>", views.score, name="score2"),
-    path("download/", views.download, name="download"),
-    path("usersdata/", views.getUsersData, name="users"),
     path("time/", views.time, name="time"),
     path("time/<pk>", views.time, name="time2"),
     path("getcsv/", views.getCSV, name="getCSV"),
-    path("getQuestionSheet", views.getQuestionsBankPDF, name="getQuestionSheet"),
+    # PDFS to get data
+    path("usersdata/", views.getUsersData, name="users"),
+    path("download/", views.download, name="download"),
+    path("getQuestionSheet/", views.getQuestionsBankPDF, name="getQuestionSheet"),
 ]
