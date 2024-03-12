@@ -363,7 +363,7 @@ def download(request):
         dic["User"] = []
         dic["Programming language"] = []
         dic["code_reading_time"] = []
-
+        dic["Code"] = []
         dic["Correct answer"] = []
         dic["Selected answer"] = []
         dic["Marks"] = []
@@ -395,6 +395,7 @@ def download(request):
             code_ids = []
             question_reading_times = []
             time_code = []
+            codesImages = []
             print(len(dic["Question"]))
             expertise = Expertise.objects.filter(fuid=uid)
             if len(expertise) == 0:
@@ -432,6 +433,8 @@ def download(request):
                     code_ids.append(int(temp[1].cid))
             print("F")
             for id in code_ids:
+                CodeImage = Code.objects.filter(cid=id).code_image
+
                 temp = Question.objects.filter(fcid=id)
                 if len(temp) == 0:
                     continue
@@ -445,6 +448,11 @@ def download(request):
                 question_reading_times.append(temp[2].question_time)
                 question_reading_times.append(temp[3].question_time)
                 question_reading_times.append(temp[4].question_time)
+                codesImages.append(CodeImage)
+                codesImages.append(CodeImage)
+                codesImages.append(CodeImage)
+                codesImages.append(CodeImage)
+                codesImages.append(CodeImage)
 
             evaluations_id = Evaluation.objects.filter(
                 ffuid=user_id, ffqbid=question_bank_id
@@ -497,14 +505,15 @@ def download(request):
             dic["question_reading_time"] = dic["question_reading_time"] + (
                 question_reading_times
             )
+            dic["Code"] = dic["Code"] + (codesImages)
             dic["code_reading_time"] = dic["code_reading_time"] + (time_code)
-        print
-        print(len(dic["code_reading_time"]))
-        print(len(dic["User"]))
-        print(len(dic["Question"]))
-        print(len(dic["Marks"]))
-        print(len(dic["Correct answer"]))
-        print(len(dic["Selected answer"]))
+        # print
+        # print(len(dic["code_reading_time"]))
+        # print(len(dic["User"]))
+        # print(len(dic["Question"]))
+        # print(len(dic["Marks"]))
+        # print(len(dic["Correct answer"]))
+        # print(len(dic["Selected answer"]))
 
         df = pd.DataFrame(dic)
         response = HttpResponse(content_type="text/csv")
@@ -519,6 +528,7 @@ def download(request):
                 "Level",
                 "Code Read Time",
                 "Question Time",
+                "Code",
                 "Question",
                 "Selected answer",
                 "Correct answer",
@@ -535,6 +545,7 @@ def download(request):
                     df["Level"][ind],
                     df["code_reading_time"][ind],
                     df["question_reading_time"][ind],
+                    df["Code"][ind],
                     df["Question"][ind],
                     df["Selected answer"][ind],
                     df["Correct answer"][ind],
@@ -751,7 +762,7 @@ def getUsersData(request):
     dic["OL1_Frequency"] = []
     dic["OL2_Frequency"] = []
     dic["OL3_Frequency"] = []
-        
+
     for user in users:
         exp = Expertise.objects.filter(fuid=user.uid)
         if len(exp) == 0:
@@ -781,41 +792,37 @@ def getUsersData(request):
         #     dic["Time_In_Language"].append(lang.duration)
         #     dic["Frequency"].append(lang.time)
 
-        if len(langs) < 0 : 
+        if len(langs) < 0:
             dic["OL1_Name"].append(" ")
             dic["OL1_Expertise"].append(" ")
             dic["OL1_Time"].append(" ")
             dic["OL1_Frequency"].append(" ")
-        else : 
+        else:
             dic["OL1_Name"].append(getlanguage(int(langs[0].selectedLanguage)))
             dic["OL1_Expertise"].append(getLevel(langs[0].level))
             dic["OL1_Time"].append(langs[0].duration)
-            dic["OL1_Frequency"].append(langs[0].time) 
-        if len(langs) < 1 : 
+            dic["OL1_Frequency"].append(langs[0].time)
+        if len(langs) < 1:
             dic["OL2_Name"].append(" ")
             dic["OL2_Expertise"].append(" ")
             dic["OL2_Time"].append(" ")
             dic["OL2_Frequency"].append(" ")
-        else : 
+        else:
             dic["OL2_Name"].append(getlanguage(int(langs[1].selectedLanguage)))
             dic["OL2_Expertise"].append(getLevel(langs[1].level))
             dic["OL2_Time"].append(langs[1].duration)
             dic["OL2_Frequency"].append(langs[1].time)
-        
 
-        if len(langs) < 2 : 
+        if len(langs) < 2:
             dic["OL3_Name"].append(" ")
             dic["OL3_Expertise"].append(" ")
             dic["OL3_Time"].append(" ")
             dic["OL3_Frequency"].append(" ")
-        else : 
+        else:
             dic["OL3_Name"].append(getlanguage(int(langs[2].selectedLanguage)))
             dic["OL3_Expertise"].append(getLevel(langs[2].level))
             dic["OL3_Time"].append(langs[2].duration)
-            dic["OL3_Frequency"].append(langs[2].time) 
-        
-
-
+            dic["OL3_Frequency"].append(langs[2].time)
 
     print(dic)
     df = pd.DataFrame(dic)
@@ -834,7 +841,7 @@ def getUsersData(request):
             "Expertise_In_Experimental_Language",
             "Time_In_Experimental_Language",
             "Frequency",
-            "OL1_Name", 
+            "OL1_Name",
             "OL2_Name",
             "OL3_Name",
             "OL1_Time",
@@ -845,7 +852,7 @@ def getUsersData(request):
             "OL3_Expertise",
             "OL1_Frequency",
             "OL2_Frequency",
-            "OL3_Frequency"
+            "OL3_Frequency",
         ]
     )
     for ind in range(df.shape[0]):
@@ -872,7 +879,7 @@ def getUsersData(request):
                 df["OL3_Expertise"][ind],
                 df["OL1_Frequency"][ind],
                 df["OL2_Frequency"][ind],
-                df["OL3_Frequency"][ind]
+                df["OL3_Frequency"][ind],
             ]
         )
 
