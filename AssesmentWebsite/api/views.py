@@ -241,7 +241,7 @@ def score(request, pk=None):
         temp_questionbanklevel_id = QuestionsBankLevel.objects.filter(
             fqbid=temp_questionbank_id, qlevel=int(queries["level"][0])
         ).first()
-        x
+
         temp_code_id = Code.objects.filter(fqblid=temp_questionbanklevel_id)[
             int(queries["code_no"][0])
         ].cid
