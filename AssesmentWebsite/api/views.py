@@ -791,7 +791,7 @@ def getUsersData(request):
         #     dic["Time_In_Language"].append(lang.duration)
         #     dic["Frequency"].append(lang.time)
 
-        if len(langs) < 0:
+        if len(langs) <= 0:
             dic["OL1_Name"].append(" ")
             dic["OL1_Expertise"].append(" ")
             dic["OL1_Time"].append(" ")
@@ -801,7 +801,7 @@ def getUsersData(request):
             dic["OL1_Expertise"].append(getLevel(langs[0].level))
             dic["OL1_Time"].append(langs[0].duration)
             dic["OL1_Frequency"].append(langs[0].time)
-        if len(langs) < 1:
+        if len(langs) <= 1:
             dic["OL2_Name"].append(" ")
             dic["OL2_Expertise"].append(" ")
             dic["OL2_Time"].append(" ")
@@ -812,7 +812,7 @@ def getUsersData(request):
             dic["OL2_Time"].append(langs[1].duration)
             dic["OL2_Frequency"].append(langs[1].time)
 
-        if len(langs) < 2:
+        if len(langs) <= 2:
             dic["OL3_Name"].append(" ")
             dic["OL3_Expertise"].append(" ")
             dic["OL3_Time"].append(" ")
