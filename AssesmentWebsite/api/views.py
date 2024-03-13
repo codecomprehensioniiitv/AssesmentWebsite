@@ -1129,6 +1129,8 @@ def getQuestionsBankPDF(request):
         dic["Experimental Language"] = []
         dic["Level"] = []
         dic["Code"] = []
+        dic["Code_No"]
+        dic["Question_No"] = []
         dic["Question"] = []
         dic["Option 1"] = []
         dic["Option 2"] = []
@@ -1155,6 +1157,8 @@ def getQuestionsBankPDF(request):
                         )
                         dic["Level"].append(getLevel((qbl.qlevel)))
                         dic["Code"].append(code.code_image)
+                        dic["Code_No"].append(code.cid)
+                        dic["Question_No"].append(question.qid)
                         dic["Question"].append(question.question_text)
                         dic["Option 1"].append(question.option1)
                         dic["Option 2"].append(question.option2)
@@ -1173,7 +1177,10 @@ def getQuestionsBankPDF(request):
             [
                 "Experimental Language",
                 "Level",
-                "Code" "Question",
+                "Code",
+                "Code_No",
+                "Queston_No",
+                "Question",
                 "Option 1",
                 "Option 2",
                 "Option 3",
@@ -1190,6 +1197,8 @@ def getQuestionsBankPDF(request):
                     df["Experimental Language"][ind],
                     df["Level"][ind],
                     df["Code"][ind],
+                    df["Code_No"][ind],
+                    df["Question_No"][ind],
                     df["Question"][ind],
                     df["Option 1"][ind],
                     df["Option 2"][ind],
