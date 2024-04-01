@@ -362,7 +362,7 @@ def download(request):
         dic["User"] = []
         dic["Programming language"] = []
         dic["code_reading_time"] = []
-        dic["Code"] = []
+        # dic["Code"] = []
         dic["Correct answer"] = []
         dic["Selected answer"] = []
         dic["Marks"] = []
@@ -432,7 +432,7 @@ def download(request):
                     code_ids.append(int(temp[1].cid))
             print("F")
             for id in code_ids:
-                CodeImage = Code.objects.filter(cid=id).code_image
+                # CodeImage = Code.objects.filter(cid=id).code_image
 
                 temp = Question.objects.filter(fcid=id)
                 if len(temp) == 0:
@@ -447,11 +447,11 @@ def download(request):
                 question_reading_times.append(temp[2].question_time)
                 question_reading_times.append(temp[3].question_time)
                 question_reading_times.append(temp[4].question_time)
-                codesImages.append(CodeImage)
-                codesImages.append(CodeImage)
-                codesImages.append(CodeImage)
-                codesImages.append(CodeImage)
-                codesImages.append(CodeImage)
+                # codesImages.append(CodeImage)
+                # codesImages.append(CodeImage)
+                # codesImages.append(CodeImage)
+                # codesImages.append(CodeImage)
+                # codesImages.append(CodeImage)
 
             evaluations_id = Evaluation.objects.filter(
                 ffuid=user_id, ffqbid=question_bank_id
@@ -486,6 +486,7 @@ def download(request):
 
             n = len(question_ids)
 
+            print((time_code))
             dic["User"] = dic["User"] + ([uid] * n)
             dic["Programming language"] = dic["Programming language"] + (
                 [getlanguage(program_language)] * n
@@ -496,7 +497,7 @@ def download(request):
             dic["Level"] = dic["Level"] + levelArr
             dic["Selected answer"] = dic["Selected answer"] + (selected_answers)
             dic["Correct answer"] = dic["Correct answer"] + (correct_answers)
-            print("LLD")
+
             dic["Decision"] = dic["Decision"] + [
                 getdecision(decision) for decision in decisions
             ]
@@ -504,15 +505,11 @@ def download(request):
             dic["question_reading_time"] = dic["question_reading_time"] + (
                 question_reading_times
             )
-            dic["Code"] = dic["Code"] + (codesImages)
+            # dic["Code"] = dic["Code"] + (codesImages)
             dic["code_reading_time"] = dic["code_reading_time"] + (time_code)
-        # print
-        # print(len(dic["code_reading_time"]))
-        # print(len(dic["User"]))
-        # print(len(dic["Question"]))
-        # print(len(dic["Marks"]))
-        # print(len(dic["Correct answer"]))
-        # print(len(dic["Selected answer"]))
+            print(len(dic["code_reading_time"]))
+            # print
+            print("\n================================")
 
         df = pd.DataFrame(dic)
         response = HttpResponse(content_type="text/csv")
@@ -527,7 +524,7 @@ def download(request):
                 "Level",
                 "Code Read Time",
                 "Question Time",
-                "Code",
+                # "Code",
                 "Question",
                 "Selected answer",
                 "Correct answer",
@@ -544,7 +541,7 @@ def download(request):
                     df["Level"][ind],
                     df["code_reading_time"][ind],
                     df["question_reading_time"][ind],
-                    df["Code"][ind],
+                    # df["Code"][ind],
                     df["Question"][ind],
                     df["Selected answer"][ind],
                     df["Correct answer"][ind],
