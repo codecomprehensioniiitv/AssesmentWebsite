@@ -378,7 +378,7 @@ def download(request):
             iterative_question_id.append("5")
 
         dic["Question"] = []
-        levelArr = [0] * 10 + [1] * 10 + [2] * 10
+        levelArr = [1] * 10 + [2] * 10 + [3] * 10
         dic["Level"] = []
 
         user_ids = Demographic.objects.values_list("uid", flat=True)
@@ -1157,7 +1157,7 @@ def getQuestionsBankPDF(request):
                         dic["Experimental Language"].append(
                             getlanguage(int(language.admin_programming_language))
                         )
-                        dic["Level"].append(getLevel((qbl.qlevel)))
+                        dic["Level"].append(((qbl.qlevel)))
                         dic["Code"].append(code.code_image)
                         dic["Code_No"].append(code.cid)
                         dic["Question_No"].append(question.qid)
