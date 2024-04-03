@@ -362,7 +362,7 @@ def download(request):
         dic["User"] = []
         dic["Programming language"] = []
         dic["code_reading_time"] = []
-        # dic["Code"] = []
+        dic["Code"] = []
         dic["Correct answer"] = []
         dic["Selected answer"] = []
         dic["Marks"] = []
@@ -394,7 +394,7 @@ def download(request):
             code_ids = []
             question_reading_times = []
             time_code = []
-            codesImages = []
+            codesArr = []
             print(len(dic["Question"]))
             expertise = Expertise.objects.filter(fuid=uid)
             if len(expertise) == 0:
@@ -447,6 +447,11 @@ def download(request):
                 question_reading_times.append(temp[2].question_time)
                 question_reading_times.append(temp[3].question_time)
                 question_reading_times.append(temp[4].question_time)
+                codesArr.append(id)
+                codesArr.append(id)
+                codesArr.append(id)
+                codesArr.append(id)
+                codesArr.append(id)
                 # codesImages.append(CodeImage)
                 # codesImages.append(CodeImage)
                 # codesImages.append(CodeImage)
@@ -505,7 +510,8 @@ def download(request):
             dic["question_reading_time"] = dic["question_reading_time"] + (
                 question_reading_times
             )
-            # dic["Code"] = dic["Code"] + (codesImages)
+
+            dic["Code"] = dic["Code"] + (codesArr)
             dic["code_reading_time"] = dic["code_reading_time"] + (time_code)
             print(len(dic["code_reading_time"]))
             # print
@@ -522,9 +528,9 @@ def download(request):
                 "User",
                 "Programming language",
                 "Level",
+                "Code",
                 "Code Read Time",
                 "Question Time",
-                # "Code",
                 "Question",
                 "Selected answer",
                 "Correct answer",
@@ -539,9 +545,9 @@ def download(request):
                     df["User"][ind],
                     df["Programming language"][ind],
                     df["Level"][ind],
+                    df["Code"][ind],
                     df["code_reading_time"][ind],
                     df["question_reading_time"][ind],
-                    # df["Code"][ind],
                     df["Question"][ind],
                     df["Selected answer"][ind],
                     df["Correct answer"][ind],
