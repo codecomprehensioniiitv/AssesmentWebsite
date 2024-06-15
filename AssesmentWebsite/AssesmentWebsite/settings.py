@@ -180,7 +180,5 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Add the origin(s) of your frontend application
-    "http://codecomprehension.co",
-    "https://ra-frontend-2.vercel.app/",
+    "*"
 ]
