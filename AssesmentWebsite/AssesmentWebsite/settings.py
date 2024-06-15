@@ -180,5 +180,5 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 CORS_ALLOWED_ORIGINS = [
-    "*"
+    'https://ra-frontend-2.vercel.app',
 ]
