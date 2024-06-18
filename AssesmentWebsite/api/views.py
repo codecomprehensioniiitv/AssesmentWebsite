@@ -471,7 +471,7 @@ def download(request):
                 temp1 = Question.objects.filter(qid=id)
                 if len(temp1) == 0:
                     continue
-                correct_answers.append(int(temp1.first().correct_option))
+                correct_answers.append(temp1.first().correct_option)
 
                 temp = Score.objects.filter(fevid=evaluation_id, fqid=id)
                 if len(temp) == 0:
