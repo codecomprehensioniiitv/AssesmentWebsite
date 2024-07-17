@@ -87,7 +87,7 @@ import dj_database_url
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgres://admin:wSbCJDEnBw4BjASQx0VuYOpYJGY735t6@dpg-cpms26o8fa8c73ankerg-a.oregon-postgres.render.com/db_kxys",
+        default="postgresql://admin:ahdOgR2PXnHh47YFOXrFCpYqpVXJqxb4@dpg-cqbmo2uehbks73dr14q0-a.oregon-postgres.render.com/db_qs0z",
         conn_max_age=600,
     )
 }
