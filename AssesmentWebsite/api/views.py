@@ -392,8 +392,8 @@ def download(request):
             marks = []
             decisions = []
             code_ids = []
-            question_reading_times = []
             time_code = []
+            questionReadTime = []
             codesArr = []
             print(len(dic["Question"]))
             expertise = Expertise.objects.filter(fuid=uid)
@@ -442,11 +442,6 @@ def download(request):
                 question_ids.append(int(temp[2].qid))
                 question_ids.append(int(temp[3].qid))
                 question_ids.append(int(temp[4].qid))
-                question_reading_times.append(temp[0].question_time)
-                question_reading_times.append(temp[1].question_time)
-                question_reading_times.append(temp[2].question_time)
-                question_reading_times.append(temp[3].question_time)
-                question_reading_times.append(temp[4].question_time)
                 codesArr.append(id)
                 codesArr.append(id)
                 codesArr.append(id)
@@ -479,6 +474,7 @@ def download(request):
                     marks.append(0)
                     decisions.append(2)
                     time_code.append("None")
+                    questionReadTime.append("None")
                     continue
                 temp = temp.first()
                 selected_answers.append(temp.selected_answer)
@@ -488,6 +484,7 @@ def download(request):
             times = Time.objects.filter(ffevid=evaluation_id)
             for time in times:
                 time_code = time_code + [time.code_read_time] * 5
+                questionReadTime  = questionReadTime + [time.question_read_time]*5
 
             n = len(question_ids)
 
@@ -507,12 +504,9 @@ def download(request):
                 getdecision(decision) for decision in decisions
             ]
             dic["Marks"] = dic["Marks"] + (marks)
-            dic["question_reading_time"] = dic["question_reading_time"] + (
-                question_reading_times
-            )
-
             dic["Code"] = dic["Code"] + (codesArr)
             dic["code_reading_time"] = dic["code_reading_time"] + (time_code)
+            dic["question_reading_time"] = dic["question_reading_time"] + (questionReadTime);
             print(len(dic["code_reading_time"]))
             # print
             print("\n================================")
