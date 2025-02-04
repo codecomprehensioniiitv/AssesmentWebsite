@@ -87,7 +87,7 @@ import dj_database_url
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgresql://codecomprehensioniiitv_user:vBb6HINQmi6JTRwXHIQrjTUeAQXzNJfW@dpg-cstl8p5umphs73fqgg50-a/codecomprehensioniiitv",
+        default="postgresql://iiitvuser_user:fv8CFs3jBfFVZXrpcgXTP4sDdEG8r8mz@dpg-cuh2ohl6l47c73bd1l40-a.oregon-postgres.render.com/iiitvuser",
         conn_max_age=600,
     )
 }
